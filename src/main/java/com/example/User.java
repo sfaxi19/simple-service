@@ -5,11 +5,35 @@ package com.example;
  */
 public class User {
 
-    public String name;
-    public String surname;
+    private String name;
+    private String surname;
 
-    public User() {
-        this.name = "null";
-        this.surname = "null";
+    private class OutUser{
+
+        public String name;
+        public String surname;
+
+        public OutUser(){
+            this.name = User.this.name;
+            this.surname = User.this.surname;
+        }
+
+    }
+
+    public User(String name, String surname) {
+        this.name = name;
+        this.surname = surname;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public Object getUser(){
+        OutUser outUser = new OutUser();
+        return outUser;
+    }
+    public void setSurname(String surname){
+        this.surname = surname;
     }
 }

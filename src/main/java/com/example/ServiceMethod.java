@@ -14,12 +14,12 @@ import java.util.Map;
 @RestController
 public class ServiceMethod {
 
-    public HashMap<String, User> persons = new HashMap<>();
+    private final HashMap<String, User> persons = new HashMap<>();
+    private int id=0;
 
     @RequestMapping(method = RequestMethod.GET)
-    Object userGET(@RequestParam(value ="id",required = false,
-                    defaultValue = "non") String id) {
-        if(!id.equals("non")){
+    Object getUsers(@RequestParam(value ="id",required = false)String id) {
+        if(id!=null){
             return persons.get(id);
         }else {
             return persons;
@@ -27,60 +27,55 @@ public class ServiceMethod {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    Map userPOST(@RequestParam(value = "name",required = false,
-                         defaultValue = "null")String name,
-                 @RequestParam(value = "surname",required = false,
-                         defaultValue = "null") String surname) {
-        int id = 0;
+    void createUser(@RequestParam(value = "name",required = false,
+                                  defaultValue = "null")String name,
+                    @RequestParam(value = "surname",required = false,
+                                  defaultValue = "null") String surname) {
         User newUser;
-        newUser = new User();
-        newUser.name = name;
-        newUser.surname = surname;
-        while (persons.get(Integer.toString(id)) != null)
+        newUser = new User(name,surname);
+        synchronized (persons) {
+            persons.put(Integer.toString(id), newUser);
+            System.out.println("create: id = " + id + "; Name = " + name
+                    + "; Surname = " + surname);
             id++;
-        persons.put(Integer.toString(id), newUser);
-        System.out.println("POST: id = " + id + "; Name = " + name
-                + "; Surname = " + surname);
-        return persons;
+        }
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    Map userPUT(String id,
-                @RequestParam(value = "name",required = false,
-                        defaultValue = "null")String name,
-                @RequestParam(value = "surname",required = false,
-                        defaultValue = "null") String surname) {
-        User newUser = new User();
-        newUser.name=name;
-        newUser.surname=surname;
-        persons.put(id,newUser);
-        System.out.println("PATCH: id = " + id + "; Name = " + name
-                + "; Surname = " + surname);
+    Map updateUser(String id,
+                   @RequestParam(value = "name",required = false,
+                                 defaultValue = "null")String name,
+                   @RequestParam(value = "surname",required = false,
+                                 defaultValue = "null") String surname) {
+        persons.get(id).setName(name);
+        persons.get(id).setSurname(surname);
+        System.out.println("update: id = " + id + "; Name = " + name
+                         + "; Surname = " + surname);
         return persons;
     }
 
-    /* example request: curl -i --request PATCH localhost:8080 --data "id=0&surname=Ivanov" */
+    /* example request:
+        curl --request PATCH localhost:8080 --data "id=0&surname=Ivanov" */
     @RequestMapping(method = RequestMethod.PATCH)
-    Map userPATCH(String id,
-                  @RequestParam(value = "surname",required = false,
-                        defaultValue = "null")String surname,
-                  @RequestParam(value = "name",required = false,
-                        defaultValue = "null")String name) {
-        if(!name.equals("null")) {
-            persons.get(id).name = name;
-            System.out.println("PATCH: id = " + id + "; name = " + name);
+    Map updateUser2(String id,
+                    @RequestParam(value = "surname",
+                                  required = false)String surname,
+                    @RequestParam(value = "name",required = false)String name) {
+        if(name!=null) {
+            persons.get(id).setName(name);
+            System.out.println("path: id = " + id + "; name = " + name);
         }
-        if(!surname.equals("null")){
-            persons.get(id).surname = surname;
-            System.out.println("PATCH: id = " + id + "; Surname = " + surname);
+        if(surname!=null) {
+            persons.get(id).setSurname(surname);
+            System.out.println("path: id = " + id + "; surname = " + surname);
         }
         return persons;
     }
 
-    /* example request: curl -i --request DELETE localhost:8080?id=0 */
+    /* example request: curl --request DELETE localhost:8080?id=0 */
     @RequestMapping(method = RequestMethod.DELETE)
-    Map userDELETE(String id){
-        System.out.println("DELETE: id = " + id + ";");
+    Map deleteUser(String id){
+        System.out.println("delete: id = " + id);
         persons.remove(id);
         return persons;
     }

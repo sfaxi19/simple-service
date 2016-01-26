@@ -7,10 +7,10 @@ import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan
 @EnableAutoConfiguration
-public class simpleService {
+public class SimpleService {
     
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(simpleService.class, args);
+        SpringApplication.run(SimpleService.class, args);
     }
 
 }
