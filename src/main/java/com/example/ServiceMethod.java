@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by sfaxi19 on 29.11.2015.
@@ -14,58 +15,68 @@ import java.util.Map;
 @RestController
 public class ServiceMethod {
 
-    private final HashMap<String, User> persons = new HashMap<>();
-    private int id=0;
+    private final Map<String, User> persons = new HashMap<>();
+    private int id = 0;
 
     @RequestMapping(method = RequestMethod.GET)
-    Object getUsers(@RequestParam(value ="id",required = false)String id) {
-        if(id!=null){
-            return persons.get(id);
-        }else {
-            return persons;
+    Object getUser(@RequestParam(value = "id", required = false) String id) {
+        if ((id == null) || !(persons.containsKey(id))) {
+            return new SendMessage("Not correct id");
         }
+        System.out.println("get: id = " + id
+                + "; Name = " + persons.get(id).getUser().name
+                + "; Surname = " + persons.get(id).getUser().surname);
+        return persons.get(id).getUser();
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    void createUser(@RequestParam(value = "name",required = false,
-                                  defaultValue = "null")String name,
-                    @RequestParam(value = "surname",required = false,
-                                  defaultValue = "null") String surname) {
+    int createUser(@RequestParam(value = "name",
+                           required = false) String name,
+                   @RequestParam(value = "surname",
+                           required = false) String surname) {
         User newUser;
-        newUser = new User(name,surname);
+        newUser = new User(name, surname);
         synchronized (persons) {
             persons.put(Integer.toString(id), newUser);
             System.out.println("create: id = " + id + "; Name = " + name
                     + "; Surname = " + surname);
             id++;
         }
+        return 0;
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    Map updateUser(String id,
-                   @RequestParam(value = "name",required = false,
-                                 defaultValue = "null")String name,
-                   @RequestParam(value = "surname",required = false,
-                                 defaultValue = "null") String surname) {
+    Object updateUser(String id,
+                      @RequestParam(value = "name", required = false,
+                              defaultValue = "null") String name,
+                      @RequestParam(value = "surname", required = false,
+                              defaultValue = "null") String surname) {
+        if ((id == null) || !(persons.containsKey(id))) {
+            return new SendMessage("Not correct id");
+        }
         persons.get(id).setName(name);
         persons.get(id).setSurname(surname);
         System.out.println("update: id = " + id + "; Name = " + name
-                         + "; Surname = " + surname);
+                + "; Surname = " + surname);
         return persons;
     }
 
     /* example request:
         curl --request PATCH localhost:8080 --data "id=0&surname=Ivanov" */
     @RequestMapping(method = RequestMethod.PATCH)
-    Map updateUser2(String id,
-                    @RequestParam(value = "surname",
-                                  required = false)String surname,
-                    @RequestParam(value = "name",required = false)String name) {
-        if(name!=null) {
+    Object updateUser2(String id,
+                       @RequestParam(value = "surname",
+                               required = false) String surname,
+                       @RequestParam(value = "name",
+                               required = false) String name) {
+        if ((id == null) || !(persons.containsKey(id))) {
+            return new SendMessage("Not correct id");
+        }
+        if (name != null) {
             persons.get(id).setName(name);
             System.out.println("path: id = " + id + "; name = " + name);
         }
-        if(surname!=null) {
+        if (surname != null) {
             persons.get(id).setSurname(surname);
             System.out.println("path: id = " + id + "; surname = " + surname);
         }
@@ -74,10 +85,12 @@ public class ServiceMethod {
 
     /* example request: curl --request DELETE localhost:8080?id=0 */
     @RequestMapping(method = RequestMethod.DELETE)
-    Map deleteUser(String id){
-        System.out.println("delete: id = " + id);
+    boolean deleteUser(String id) {
+        if ((id==null) || !(persons.containsKey(id))) {
+            return false;
+        }
         persons.remove(id);
-        return persons;
+        System.out.println("delete: id = " + id);
+        return true;
     }
-
 }
