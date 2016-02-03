@@ -1,8 +1,12 @@
 package com.example;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SendMessage {
-    public String type;
-    public String message;
+    @JsonProperty("Type")
+    private String type;
+    @JsonProperty("Message")
+    private String message;
 
     public SendMessage(String msg) {
         message = msg;
@@ -10,7 +14,8 @@ public class SendMessage {
     }
 
     public boolean equals(SendMessage obj) {
-        return ((obj.type.equals(this.type))
-             && (obj.message.equals(this.message)));
+        return ((this.type.equals(obj.type))
+             && (this.message.equals(obj.message)));
+
     }
 }

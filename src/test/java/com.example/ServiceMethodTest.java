@@ -1,7 +1,6 @@
 package com.example;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -12,7 +11,7 @@ import static org.junit.Assert.*;
 public class ServiceMethodTest {
 
     private static ServiceMethod service;
-    SendMessage fail_id = new SendMessage("Not correct id");
+    private SendMessage fail_id = new SendMessage("Not correct id");
 
     @BeforeClass
     public static void before_class() {
@@ -24,15 +23,15 @@ public class ServiceMethodTest {
 
     @Test
     public void test_getUser(){
-        assertTrue(new OutUser("name_3","surname_3")
-                .equals((OutUser)service.getUser("3")));
+        assertTrue(new User("name_3","surname_3")
+                .equals((User)service.getUser("3")));
         assertTrue(fail_id.equals((SendMessage)service.getUser("-1")));
         assertTrue(fail_id.equals((SendMessage)service.getUser(null)));
     }
 
     @Test
     public void test_create() {
-        assertEquals(service.createUser(null,null), 0);
+        assertTrue(service.createUser(null,null));
     }
 
     @Test

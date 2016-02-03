@@ -1,13 +1,14 @@
 package com.example;
 
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by sfaxi19 on 29.11.2015.
@@ -15,38 +16,30 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 public class ServiceMethod {
 
-    private final Map<String, User> persons = new HashMap<>();
-    private int id = 0;
+    private AtomicLong id = new AtomicLong(0);
+    private Map<String, User> persons = new ConcurrentHashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
-    Object getUser(@RequestParam(value = "id", required = false) String id) {
+    public Object getUser(@RequestParam(value = "id", required = false) String id) {
         if ((id == null) || !(persons.containsKey(id))) {
             return new SendMessage("Not correct id");
         }
-        System.out.println("get: id = " + id
-                + "; Name = " + persons.get(id).getUser().name
-                + "; Surname = " + persons.get(id).getUser().surname);
         return persons.get(id).getUser();
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    int createUser(@RequestParam(value = "name",
+    public boolean createUser(@RequestParam(value = "name",
                            required = false) String name,
                    @RequestParam(value = "surname",
                            required = false) String surname) {
         User newUser;
         newUser = new User(name, surname);
-        synchronized (persons) {
-            persons.put(Integer.toString(id), newUser);
-            System.out.println("create: id = " + id + "; Name = " + name
-                    + "; Surname = " + surname);
-            id++;
-        }
-        return 0;
+        persons.put(Long.toString(id.getAndIncrement()), newUser);
+        return true;
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    Object updateUser(String id,
+    public Object updateUser(String id,
                       @RequestParam(value = "name", required = false,
                               defaultValue = "null") String name,
                       @RequestParam(value = "surname", required = false,
@@ -61,10 +54,8 @@ public class ServiceMethod {
         return persons;
     }
 
-    /* example request:
-        curl --request PATCH localhost:8080 --data "id=0&surname=Ivanov" */
     @RequestMapping(method = RequestMethod.PATCH)
-    Object updateUser2(String id,
+    public Object updateUser2(String id,
                        @RequestParam(value = "surname",
                                required = false) String surname,
                        @RequestParam(value = "name",
@@ -83,9 +74,8 @@ public class ServiceMethod {
         return persons;
     }
 
-    /* example request: curl --request DELETE localhost:8080?id=0 */
     @RequestMapping(method = RequestMethod.DELETE)
-    boolean deleteUser(String id) {
+    public boolean deleteUser(String id) {
         if ((id==null) || !(persons.containsKey(id))) {
             return false;
         }
