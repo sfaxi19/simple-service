@@ -11,7 +11,7 @@
     
     "files":
         [
-        {"includePattern": "simpleService/target/service-0.0.1-SNAPSHOT.war", "uploadPattern": "simple-service/"}
+        {"includePattern": "target/*.war", "uploadPattern": "simple-service/"}
         ],
     "publish": true
     
