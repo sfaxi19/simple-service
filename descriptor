@@ -1,0 +1,12 @@
+{
+    "package": {
+        "name": "simple-service,
+        "repo": "SimpleService", 
+        "subject": "sfaxi19",
+    },
+    
+    "version": {
+    "name": "0.0.1",
+    },
+    
+}
