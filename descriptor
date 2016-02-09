@@ -1,17 +1,17 @@
 {
     "package": {
-        "name": "simple-service,
+        "name": "simple-service",
         "repo": "SimpleService", 
         "subject": "sfaxi19"
     },
     
     "version": {
-    "name": "0.0.1"
-    }
+        "name": "0.0.1"
+    },
     
     "files":
         [
-        {"includePattern": "simpleService/target/service-0.0.1-SNAPSHOT.war)", "uploadPattern": "simple-service/"}
+        {"includePattern": "simpleService/target/service-0.0.1-SNAPSHOT.war", "uploadPattern": "simple-service/"}
         ],
     "publish": true
     
