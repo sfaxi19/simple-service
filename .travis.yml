@@ -2,6 +2,8 @@ language: java
 jdk: oraclejdk8
 deploy:
   provider: bintray
-  file: "descriptor"
-  user: "sfaxi19"
-  key: "d0fe6f5cb243d7eb0e67c38c3f8fed0a403861b2"
+  file: descriptor
+  user: sfaxi19
+env:
+  matrix:
+    secure: J03nFaH2gzdLXz1rMZ1ZPp0cb4F7xd1Ac42DCO2XJxOrQuI/vlWGbiGgJ90T/HGX9OfV38PZZkYnT/N+pt33NTr0GDDsVt9XRV0RNpFSXbwfDSmaf6ARB9MU6L8iROIuIMZKfVSgZFuXo0R/uAJQ+w6xrMyNCdcCAErJwGyuCa/O0VrZFFCj9wO0hYNhLCK6IsdsQDdlXkAkjr3g4tntMWm9EMGiLAGV4ZlUufo6KhLpyljUBIfp3Q8z90dcpHzHY1FQdj4bhlaZPDQl/Uz9PiDcn1L6gpSMXC4fs1YVfFMytIET+ishgUY1a0nhUjzWjobh2IRGek2SC2UpdaCElhcKJcnwNQnJ/wMTkiDtk9ZNzDEk76Ve2YQpLCfD7LyBp7sWAXu9pZI4fGqu1fcKBXhQQLTv8H1xDbl3vi7ZXDThrtpjCmPcsbSQAEiMb04uoxSV0M0+AJ8WG8A+K34xpVvRPCf2a66MZvCSzmnTCFd3prp0eSj1o7+1lXzlzmOVDfccFXbR3sronLC+OGgW/jQrdayca6Uh58+DoacuUujNr3QW+wkLG4y6UfRRuh02GV7pKO3ZDcCBSqiI/2X1/+CbMW1Cza+ZOSwVXBLbSBlpoUV/hnApvqgaUYGRN+m2XQEktAynRJO6K4C0xJeRckg+NH56DpfUTqJKXBf9YyY=
